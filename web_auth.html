@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Testing 1 2 3 ...</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA9pWVfM8Ftdvr3AmP7gxCiSjOKwOn_GBw",
+        authDomain: "clip-it-firebase.firebaseapp.com",
+        databaseURL: "https://clip-it-firebase.firebaseio.com",
+        projectId: "clip-it-firebase",
+        storageBucket: "clip-it-firebase.appspot.com",
+        messagingSenderId: "920610207312"
+      };
+      firebase.initializeApp(config);
+    </script>
+  </head>
+  <body>
+    <div class="container jumbotron bg-white">
+      <h1>Hello world</h1>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password</label>
+        <input type="password" class="form-control" id="txtPassword" placeholder="Password">
+      </div>
+      <button class="btn btn-primary" id="btnLogin">Login</button>
+      <button class="btn btn-outline-light text-primary" id="btnSignUp">Sign Up</button>
+      <button class="btn btn-outline-primary d-none" id="btnLogOut">Log Out</button>
+      <img src="oauth.png" alt="" height="50px" id="btnOAuth">
+    </div>
+  </body>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+      const txt_email = $('#txtEmail');
+      const txt_pass = $('#txtPassword');
+      const btn_login = $('#btnLogin');
+      const btn_sign_up = $('#btnSignUp');
+      const btn_log_out = $('#btnLogOut');
+      const btn_g_oauth = $('#btnOAuth');
+
+      // Sign Up event
+      btn_sign_up.click(function() {
+        console.log(txt_email.val(), txt_pass.val());
+        firebase.auth().createUserWithEmailAndPassword(txt_email.val(), txt_pass.val()).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+        });
+      });
+
+      // Sign In event
+      btn_login.click(function() {
+        firebase.auth().signInWithEmailAndPassword(txt_email.val(), txt_pass.val()).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorCode);
+          console.log(errorMessage);
+        });
+      });
+
+      // Log Out event
+      btn_log_out.click(function() {
+        firebase.auth().signOut();
+      });
+
+      // Google auth
+      var provider = new firebase.auth.GoogleAuthProvider();
+      btn_g_oauth.click(function() {
+        firebase.auth().signInWithRedirect(provider);
+      });
+
+      firebase.auth().getRedirectResult().then(function(result) {
+        // The signed-in user info.
+        var user = result.user;
+        console.log("SUCCESS REDIRECT");
+        console.log(user);
+
+        var credential = result.credential;
+        console.log(credential);
+
+        var operationType = result.operationType;
+        console.log(operationType);
+
+      }).catch(function(error) {
+        console.log("FAILED REDIRECT");
+        // Handle Errors here.
+        var errorCode = error.code;
+        console.log(errorCode);
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        // The email of the user's account used.
+        var email = error.email;
+        console.log(email);
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        console.log(credential);
+        // ...
+
+        if (errorCode === 'auth/email-already-in-use') {
+          auth.fetchProvidersForEmail(email).then(function(providers) {
+            // The returned 'providers' is a list of the available providers
+            // linked to the email address. Please refer to the guide for a more
+            // complete explanation on how to recover from this error.
+            console.log("Email in use");
+            console.log(providers);
+          });
+        }
+      });
+
+
+      // Add a realtime listener
+      firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          console.log(user);
+          console.log(user.displayName, user.email);
+          btn_log_out.removeClass('d-none');
+        }else{
+          console.log("Not logged in");
+          btn_log_out.addClass('d-none');
+        }
+      });
+
+  </script>
+</html>

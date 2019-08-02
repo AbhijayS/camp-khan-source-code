@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Hello World!</title>
+      <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    </head>
+    <body>
+      <div class="container jumbotron bg-white">
+        <h1>Hello world</h1>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="txtEmail" aria-describedby="emailHelp" placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="txtPassword" placeholder="Password">
+        </div>
+        <button class="btn btn-primary" id="btnLogin">Login</button>
+        <button class="btn btn-outline-light text-primary" id="btnSignUp">Sign Up</button>
+        <button class="btn btn-outline-primary d-none" id="btnLogOut">Log Out</button>
+        <img src="oauth.png" alt="" height="50px" id="btnOAuth">
+      </div>
+    </body>
+
+    <script type="text/javascript">
+      require('./renderer.js')
+    </script>
+  </html>
